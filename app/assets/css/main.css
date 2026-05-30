@@ -81,7 +81,7 @@
 
   --font-size-h1: 32px;
   --font-size-h2: 21px;
-  --font-size-body: 16px;
+  --font-size-body: 14px;
   --font-size-label: 14px;
   --font-size-link: 14px;
   --font-size-input: 14px;
@@ -166,7 +166,7 @@
     border: 1px solid var(--color-card-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
-    padding: var(--spacing-16);
+    padding: var(--spacing-12) var(--spacing-16);
   }
 
   /* ---------- Buttons ---------- */
@@ -176,7 +176,6 @@
     line-height: var(--line-height-label);
     padding: var(--spacing-12) var(--spacing-20);
     border-radius: var(--radius-button);
-
     transition: background-color 0.15s ease;
     border: none;
     cursor: pointer;

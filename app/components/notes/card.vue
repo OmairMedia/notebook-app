@@ -12,10 +12,18 @@
       </p>
     </div>
     <div class="flex justify-between items-center mt-auto">
-      <button class="btn-ghost" @click="navigateTo(`/notes/${note.id}`)">
-        Read
-      </button>
-      <button class="btn-ghost text-gray-500">Delete</button>
+      <SharedButton
+        class="p-0"
+        variant="ghost"
+        text="Read"
+        @click="navigateTo(`/notes/${note.id}`)"
+      >
+      </SharedButton>
+      <SharedButton
+        class="p-0 text-red-500"
+        variant="ghost"
+        text="Delete"
+      ></SharedButton>
     </div>
   </div>
 </template>

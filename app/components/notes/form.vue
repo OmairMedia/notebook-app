@@ -1,39 +1,66 @@
 <template>
   <div class="max-w-3xl mx-auto px-8 mt-10">
-    <div class="mb-5">
-      <label class="form-label" for="title">Title</label>
-      <input
-        id="title"
-        v-model="title"
-        type="text"
-        class="input-field"
-        placeholder="Give your note a title"
-        required
-      />
-    </div>
-    <div class="mb-5">
-      <label class="form-label" for="body">Body</label>
-      <textarea
-        id="body"
-        v-model="body"
-        class="input-field"
-        rows="12"
-        placeholder="Write your thoughts..."
-        style="resize: vertical"
-      ></textarea>
-    </div>
+    <form @submit.prevent="onSubmit" novalidate>
+      <!-- Title -->
+      <FormField
+        input-id="title"
+        label="Title"
+        :errors="errors.title"
+        :on-blur="blurHandler('title')"
+      >
+        <template #default="{ inputId, hasError, onBlur }">
+          <FormInput
+            :id="inputId"
+            v-model="formData.title"
+            :has-error="hasError"
+            type="text"
+            placeholder="Note #1"
+            autocomplete="title"
+            @blur="onBlur"
+          />
+        </template>
+      </FormField>
+
+      <!-- Body -->
+      <FormField
+        input-id="body"
+        label="Body"
+        :errors="errors.body"
+        :on-blur="blurHandler('body')"
+      >
+        <template #default="{ inputId, hasError, onBlur }">
+          <FormTextarea
+            :id="inputId"
+            v-model="formData.body"
+            :has-error="hasError"
+            type="text"
+            autocomplete="body"
+            rows="12"
+            style="resize: vertical"
+            @blur="onBlur"
+            placeholder="Write here..."
+          />
+        </template>
+      </FormField>
+
+      <!-- General form error -->
+      <div v-if="formError" class="text-error text-sm mb-4" role="alert">
+        {{ formError }}
+      </div>
+
+      <SharedButton
+        type="submit"
+        class="w-full mt-2"
+        :disabled="isSubmitting"
+        :loading="isSubmitting"
+        :aria-busy="isSubmitting"
+        :text="isSubmitting ? 'Creating' : 'Create'"
+      >
+      </SharedButton>
+    </form>
   </div>
 </template>
 <script setup lang="ts">
-const router = useRouter();
-
-const title = ref("");
-const body = ref("");
-
-const save = () => {
-  if (!title.value.trim() || !body.value.trim())
-    return alert("Title and body are required.");
-  //   const newNote = addNote(title.value.trim(), body.value.trim());
-  router.push(`/notes/new-note`);
-};
+const { blurHandler, errors, formData, formError, isSubmitting, onSubmit } =
+  useNoteForm();
 </script>

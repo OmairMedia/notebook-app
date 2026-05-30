@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2>Homepage</h2>
+  <div class="w-full h-screen flex items-center justify-center">
+    <h2 class="text-4xl font-bold">Notebook App</h2>
   </div>
 </template>
 <script setup lang="ts">

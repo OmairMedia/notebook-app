@@ -2,11 +2,28 @@
   <div>
     <shared-header>
       <template #content>
-        <button class="btn-ghost" @click="navigateTo('/notes')">
-          ← Back to Notes
-        </button>
-        <div class="text-h2 font-h2 leading-h2">New Note</div>
-        <button class="btn-primary" @click="save">Save</button>
+        <SharedButton
+          variant="ghost"
+          text="Back to Notes"
+          @click="navigateTo('/notes')"
+        >
+          <template #leading-icon>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
+              />
+            </svg>
+          </template>
+        </SharedButton>
       </template>
     </shared-header>
 

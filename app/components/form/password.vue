@@ -61,6 +61,11 @@
 <script setup lang="ts">
 import { useDebounceFn } from "@vueuse/core";
 import type { FormInputProps } from "~/types/components";
+
+defineOptions({
+  inheritAttrs: false,
+});
+
 const props = defineProps<FormInputProps>();
 const emits = defineEmits(["update:modelValue", "blur"]);
 

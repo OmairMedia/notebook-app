@@ -1,14 +1,14 @@
 <template>
-  <input
+  <textarea
     :id="id"
     :type="type"
     :value="modelValue"
     :aria-invalid="hasError ? true : undefined"
     :aria-describedby="hasError ? `${id}-error` : undefined"
-    v-bind="$attrs"
     :class="['input-field', { 'input-error': hasError }]"
     @input="handleInputDebounced"
     @blur="$emit('blur')"
+    v-bind="$attrs"
   />
 </template>
 
