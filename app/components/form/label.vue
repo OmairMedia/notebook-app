@@ -2,7 +2,6 @@
   <label :for="forId" class="form-label"><slot /></label>
 </template>
 <script setup lang="ts">
-defineProps({
-  forId: { type: String, required: true },
-});
+import type { AppFormLabelProps } from "@/types/components";
+defineProps<AppFormLabelProps>();
 </script>

@@ -1,202 +1,234 @@
-Let’s fine‑tune the validation behaviour to match real‑world form UX:
-
-- Clicking into a field and leaving it **empty** should **not** show an error (field is pristine).
-- Typing something and then clearing the field should show “required” on blur.
-- Password strength rules should appear as soon as the field has a value and the user moves away.
-
-We’ll achieve this by introducing a **`dirty`** flag per field – a field becomes dirty the moment it receives a **non‑empty** value. Validation on blur only runs for dirty fields. On form submit, **all** fields are validated regardless of dirty state.
+We’ll create a robust type system for your notebook app that covers authentication, notes, reusable form components, and validation. These types are designed to work seamlessly with your Vue components, composables, and Zod schemas, ensuring type safety across the entire codebase.
 
 ---
 
-## 1. Update `useFormValidation` – Add Dirty Tracking
+## Directory Structure
 
-```javascript
-// composables/useFormValidation.js
-import { reactive, unref } from "vue";
+```
+types/
+  auth.ts         # User, auth payloads, responses
+  notes.ts        # Note entity, create/edit inputs, filters
+  forms.ts        # Form field state, validation error map, generic form types
+  components.ts   # Props for AppButton, AppFormField, AppSelect, AppCombobox, etc.
+  index.ts        # Re‑exports everything
+```
 
-export function useFormValidation(schema) {
-  const errors = reactive({});
-  const dirtyFields = reactive({}); // track fields that ever had a non‑empty value
+---
 
-  const getSchema = () => unref(schema);
+## 1. Auth Types – `types/auth.ts`
 
-  const resetErrors = () => {
-    Object.keys(errors).forEach((key) => delete errors[key]);
-  };
+```typescript
+export interface User {
+  name?: string;
+  email: string;
+}
 
-  const markDirty = (fieldName) => {
-    dirtyFields[fieldName] = true;
-  };
+export interface SignUpPayload {
+  name: string;
+  email: string;
+  password: string;
+}
 
-  const isDirty = (fieldName) => dirtyFields[fieldName];
+export interface SignInPayload {
+  email: string;
+  password: string;
+}
 
-  const validateField = (fieldName, value, force = false) => {
-    // Only validate if forced (submit) or the field has been dirtied
-    if (!force && !isDirty(fieldName)) return;
+export interface AuthResponse {
+  user: User;
+  token?: string; // optionally store JWT in real app
+}
 
-    const currentSchema = getSchema();
-    const fieldSchema = currentSchema?.shape?.[fieldName];
-    if (!fieldSchema) return;
-
-    const result = fieldSchema.safeParse(value);
-    if (!result.success) {
-      errors[fieldName] = result.error.issues.map((issue) => issue.message);
-    } else {
-      delete errors[fieldName];
-    }
-  };
-
-  const validateForm = (data) => {
-    resetErrors();
-    const currentSchema = getSchema();
-    const result = currentSchema.safeParse(data);
-    if (!result.success) {
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0];
-        if (!errors[field]) errors[field] = [];
-        errors[field].push(issue.message);
-      });
-      // After a full submit, mark all attempted fields as dirty
-      // so subsequent blur validations stay active.
-      Object.keys(data).forEach((field) => {
-        if (data[field] !== undefined) dirtyFields[field] = true;
-      });
-      return false;
-    }
-    return true;
-  };
-
-  return {
-    errors,
-    validateField,
-    validateForm,
-    resetErrors,
-    markDirty,
-    isDirty,
-  };
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
 }
 ```
 
 ---
 
-## 2. Update `useAuthForm` – Dirty Watchers & Adjusted Blur
+## 2. Notes Types – `types/notes.ts`
 
-```javascript
-// composables/useAuthForm.js
-import { reactive, ref, computed, watch } from "vue";
-import { useRouter } from "#imports";
-import { signInSchema, signUpSchema } from "~/schemas/auth.schema";
-import { useFormValidation } from "./useFormValidation";
+```typescript
+export interface Note {
+  id: string; // UUID
+  title: string;
+  body: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+
+export interface CreateNoteInput {
+  title: string;
+  body: string;
+}
+
+export interface UpdateNoteInput {
+  title?: string;
+  body?: string;
+}
+
+export interface NoteFilters {
+  search?: string;
+  sortBy?: "createdAt" | "updatedAt" | "title";
+  order?: "asc" | "desc";
+}
+
+// For optimistic updates or local state
+export type NoteDraft = Partial<Note> & { title?: string; body?: string };
+```
+
+---
+
+## 3. Generic Form & Validation Types – `types/forms.ts`
+
+```typescript
+import type { z } from "zod";
+
+// A map of field name → array of error messages
+export type ValidationErrors = Record<string, string[]>;
+
+// Individual field state for useFormField or similar composable
+export interface FieldState {
+  value: string | number | null;
+  isDirty: boolean;
+  isTouched: boolean;
+  errorMessages: string[];
+}
+
+// Generic form state that can be reused
+export interface FormState<T extends Record<string, unknown>> {
+  data: T;
+  errors: ValidationErrors;
+  isSubmitting: boolean;
+  submitError: string | null;
+}
+
+// Helper to extract the inferred type from a Zod schema
+export type ZodInfer<T extends z.ZodTypeAny> = z.infer<T>;
+```
+
+---
+
+## 4. Component Props Types – `types/components.ts`
+
+These types match the earlier reusable components exactly, so you can enforce them in your script setup if using TypeScript.
+
+```typescript
+// Button
+export interface AppButtonProps {
+  variant: "primary" | "secondary" | "ghost";
+  type: "button" | "submit" | "reset";
+  loading: boolean;
+  disabled: boolean;
+}
+
+// FormInput
+export interface AppFormInputProps {
+  id: string;
+  modelValue: string | number;
+  type: "text" | "email" | "password" | "number" | "tel" | "url";
+  hasError: boolean;
+  placeholder?: string;
+  autocomplete?: string;
+}
+
+// FormLabel
+export interface AppFormLabelProps {
+  forId: string;
+}
+
+// FormError
+export interface AppFormErrorProps {
+  inputId: string;
+  errors: string[];
+}
+
+// FormField (wrapper)
+export interface AppFormFieldProps {
+  inputId: string;
+  label: string;
+  errors: string[];
+  onBlur: () => void;
+}
+
+// AppSelect
+export interface SelectOption {
+  value: string | number;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface AppSelectProps {
+  id: string;
+  modelValue: string | number | null;
+  options: SelectOption[];
+  placeholder?: string;
+  hasError: boolean;
+}
+
+// AppCombobox
+export interface AppComboboxProps {
+  id: string;
+  modelValue: string | number | null;
+  options: SelectOption[];
+  label: string;
+  placeholder?: string;
+  hasError: boolean;
+  autoComplete?: "list" | "both";
+}
+```
+
+---
+
+## 5. Re‑export Everything – `types/index.ts`
+
+```typescript
+export * from "./auth";
+export * from "./notes";
+export * from "./forms";
+export * from "./components";
+```
+
+---
+
+## Usage in Your App
+
+### In Composables
+
+```typescript
+// composables/useAuthForm.ts
+import type { SignInPayload, SignUpPayload } from '~/types/auth';
+import type { ValidationErrors } from '~/types/forms';
 
 export function useAuthForm() {
-  const router = useRouter();
-  const isSignIn = ref(true);
-  const isSubmitting = ref(false);
-  const formError = ref("");
-
-  const formData = reactive({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const currentSchema = computed(() =>
-    isSignIn.value ? signInSchema : signUpSchema,
-  );
-  const { errors, validateField, validateForm, resetErrors, markDirty } =
-    useFormValidation(currentSchema);
-
-  // Watch each field: mark dirty when value becomes non‑empty
-  watch(
-    () => formData.name,
-    (val) => {
-      if (val && val.length > 0) markDirty("name");
-    },
-  );
-  watch(
-    () => formData.email,
-    (val) => {
-      if (val && val.length > 0) markDirty("email");
-    },
-  );
-  watch(
-    () => formData.password,
-    (val) => {
-      if (val && val.length > 0) markDirty("password");
-    },
-  );
-
-  const validate = () => {
-    return validateForm(formData);
-  };
-
-  const submit = async () => {
-    formError.value = "";
-    if (!validate()) return;
-
-    isSubmitting.value = true;
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      if (isSignIn.value) {
-        localStorage.setItem(
-          "notebook_user",
-          JSON.stringify({ email: formData.email }),
-        );
-      } else {
-        localStorage.setItem(
-          "notebook_user",
-          JSON.stringify({ name: formData.name, email: formData.email }),
-        );
-      }
-      router.push("/notes");
-    } catch (error) {
-      formError.value = "An unexpected error occurred. Please try again.";
-    } finally {
-      isSubmitting.value = false;
-    }
-  };
-
-  const toggleMode = () => {
-    isSignIn.value = !isSignIn.value;
-    resetErrors();
-    formError.value = "";
-    formData.password = "";
-  };
-
-  // blurHandler now uses force=false (respects dirty state)
-  const blurHandler = (fieldName) => {
-    return () => validateField(fieldName, formData[fieldName], false);
-  };
-
-  return {
-    isSignIn,
-    formData,
-    errors,
-    formError,
-    isSubmitting,
-    submit,
-    toggleMode,
-    blurHandler,
-  };
+  const formData: SignInPayload & { name?: string } = reactive({ ... });
+  const errors: ValidationErrors = reactive({});
+  // ...
 }
+```
+
+### In Components
+
+```vue
+<script setup lang="ts">
+import type { AppFormInputProps } from "~/types/components";
+
+const props = defineProps<AppFormInputProps>();
+// ...
+</script>
+```
+
+### Zod Schema Inference
+
+```typescript
+import { signInSchema } from "~/schemas/auth.schema";
+import type { ZodInfer } from "~/types/forms";
+
+type SignInFormData = ZodInfer<typeof signInSchema>;
+// { email: string; password: string }
 ```
 
 ---
 
-## 3. Password Strength Schema (Already Correct)
-
-Your `signUpSchema` in `schemas/auth.schema.js` is already perfect – it enforces length, uppercase, lowercase, number, and special character. No change needed.
-
----
-
-## 4. Expected Behaviour After Changes
-
-- **Empty field, never touched**: clicking in and out shows **no error**.
-- **Type something, then delete it completely**: on blur, “required” error appears because the field is now dirty.
-- **Type a weak password** (e.g., `abc`): blur triggers validation because the field is dirty. The first failing rule (`.min(8)`) shows **“Password must be at least 8 characters”**.
-- **Type a longer but weak password** (e.g., `abcdefgh`): on blur, shows **“Must contain at least one uppercase letter”** (or whichever rule fails first). All strength rules are now active.
-- **Submit** with invalid fields: all errors are shown immediately, regardless of previous blur state.
-
----
-
-This approach follows industry‑standard form UX: no premature errors, instant feedback after real interaction, and full validation on submission. Your login/register form is now robust and user‑friendly.
+These types cover every entity, form, and reusable component in your notebook app. They’ll help you catch mistakes at compile time and make your composables and components self‑documenting. Once your project is ready to transition to full TypeScript, these definitions will be the foundation.

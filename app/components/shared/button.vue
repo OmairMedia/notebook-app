@@ -16,32 +16,35 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
+import type { AppButtonProps } from "@/types/components";
 
 defineOptions({
   inheritAttrs: false,
 });
 
-const props = defineProps({
-  variant: {
-    type: String,
-    default: "primary",
-    validator: (v) => ["primary", "secondary", "ghost"].includes(v),
-  },
-  type: {
-    type: String,
-    default: "button",
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-});
+const props = defineProps<AppButtonProps>();
+
+//   {
+//   variant: {
+//     type: String,
+//     default: "primary",
+//     validator: (v) => ["primary", "secondary", "ghost"].includes(v),
+//   },
+//   type: {
+//     type: String,
+//     default: "button",
+//   },
+//   loading: {
+//     type: Boolean,
+//     default: false,
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false,
+//   },
+// }
 
 const buttonClass = computed(() => {
   const base = "btn";

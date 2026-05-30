@@ -8,15 +8,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { AppFormFieldProps } from "@/types/components";
 import { computed } from "vue";
 
-const props = defineProps({
-  inputId: { type: String, required: true },
-  label: { type: String, required: true },
-  errors: { type: Array, default: () => [] },
-  onBlur: { type: Function, default: () => {} },
-});
+const props = defineProps<AppFormFieldProps>();
 
 const hasError = computed(() => props.errors && props.errors.length > 0);
 </script>

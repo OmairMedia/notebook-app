@@ -1,7 +1,8 @@
 import { reactive, ref } from "vue";
+import type { ValidationErrors } from "~/types/forms";
 
 export function useFormValidation(schema: any) {
-  const errors = reactive({});
+  const errors: ValidationErrors = reactive({});
   const dirtyFields = reactive({}); // track fields that ever had a non‑empty value
 
   // Helper to always get the current schema value

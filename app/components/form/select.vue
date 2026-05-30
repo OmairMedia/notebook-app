@@ -24,18 +24,10 @@
   </select>
 </template>
 
-<script setup>
-defineProps({
-  id: { type: String, required: true },
-  modelValue: { type: [String, Number, null], default: null },
-  options: {
-    type: Array,
-    required: true,
-    validator: (opts) => opts.every((opt) => "value" in opt && "label" in opt),
-  },
-  placeholder: { type: String, default: "" },
-  hasError: { type: Boolean, default: false },
-});
+<script setup lang="ts">
+import type { AppSelectProps } from "@/types/components";
+
+defineProps<AppSelectProps>();
 
 defineEmits(["update:modelValue", "blur"]);
 </script>

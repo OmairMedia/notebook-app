@@ -1,14 +1,17 @@
 import { reactive, ref, computed } from "vue";
 import { signInSchema, signUpSchema } from "~/schemas/auth.schema";
 import { useFormValidation } from "./useFormValidation";
+import type { SignInPayload, SignUpPayload } from "~/types/auth";
+import { toast } from "vue-sonner";
 
 export function useAuthForm() {
+  const supabase = useSupabaseClient();
   const router = useRouter();
   const isSignIn = ref(true); // default sign in
   const isSubmitting = ref(false);
   const formError = ref(""); // general form-level error
 
-  const formData = reactive({
+  const formData: SignInPayload & { name?: string } = reactive({
     name: "",
     email: "",
     password: "",
@@ -56,17 +59,26 @@ export function useAuthForm() {
 
       // Dummy authentication
       if (isSignIn.value) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+        if (error) {
+          toast.error(error.message);
+        }
         // Simulate sign in – store user
-        localStorage.setItem(
-          "notebook_user",
-          JSON.stringify({ email: formData.email }),
-        );
+        toast.success("Login successfull");
       } else {
         // Simulate sign up
-        localStorage.setItem(
-          "notebook_user",
-          JSON.stringify({ name: formData.name, email: formData.email }),
-        );
+        const { error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+        });
+        if (error) {
+          toast.error(error.message);
+        }
+        // Simulate sign in – store user
+        toast.success("User registered successfully");
       }
 
       router.push("/dashboard");

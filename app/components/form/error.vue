@@ -25,9 +25,8 @@
     </div>
   </div>
 </template>
-<script setup>
-defineProps({
-  inputId: { type: String, required: true },
-  errors: { type: Array, default: () => [] },
-});
+<script setup lang="ts">
+import type { AppFormErrorProps } from "@/types/components";
+
+defineProps<AppFormErrorProps>();
 </script>

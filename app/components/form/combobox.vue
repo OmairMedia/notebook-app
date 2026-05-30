@@ -88,22 +88,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, nextTick } from "vue";
+import type { AppComboboxProps } from "@/types/components";
 
-const props = defineProps({
-  id: { type: String, required: true },
-  modelValue: { type: [String, Number, null], default: null },
-  options: {
-    type: Array,
-    required: true,
-    validator: (opts) => opts.every((opt) => "value" in opt && "label" in opt),
-  },
-  label: { type: String, default: "Search" },
-  placeholder: { type: String, default: "" },
-  hasError: { type: Boolean, default: false },
-  autoComplete: { type: String, default: "list" }, // 'list' or 'both'
-});
+const props = defineProps<AppComboboxProps>();
 
 const emit = defineEmits(["update:modelValue", "blur", "input"]);
 
