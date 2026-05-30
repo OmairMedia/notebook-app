@@ -17,13 +17,8 @@
       </template>
     </shared-header>
 
-    <div class="max-w-3xl mx-auto px-8 mt-10">
-      <h1 class="text-h1 font-h1 leading-h1 mb-2">{{ note.title }}</h1>
-      <p class="text-gray-500 text-label mb-6">{{ formattedDate }}</p>
-      <div class="whitespace-pre-wrap text-body leading-body">
-        {{ note.body }}
-      </div>
-    </div>
+    <!-- View -->
+    <notes-view :note="note" />
   </div>
 </template>
 
@@ -35,25 +30,15 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 
-const id = route.params.id;
-const note = "";
-
-if (!note) {
-  router.replace("/notes");
-}
-
-const formattedDate = computed(() =>
-  new Date(note.value?.updatedAt).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }),
-);
-
-const handleDelete = () => {
-  if (confirm("Delete this note?")) {
-    // deleteNote(id);
-    router.push("/notes");
-  }
-};
+const note = ref({
+  id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  title: "Meeting notes – Q3 planning",
+  body: `Discussed roadmap for Q3:
+- Finalize API v2 migration by July 15
+- UX refresh for dashboard (designs due next week)
+- Hiring update: two new frontend engineers start Aug 1
+Next meeting: Friday 10am PST`,
+  createdAt: "2026-05-20T09:30:00.000Z",
+  updatedAt: "2026-05-25T14:15:00.000Z",
+});
 </script>

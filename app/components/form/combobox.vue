@@ -90,9 +90,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from "vue";
-import type { AppComboboxProps } from "@/types/components";
+import type { ComboboxProps } from "@/types/components";
 
-const props = defineProps<AppComboboxProps>();
+const props = defineProps<ComboboxProps>();
 
 const emit = defineEmits(["update:modelValue", "blur", "input"]);
 

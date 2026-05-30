@@ -7,19 +7,18 @@
     :aria-describedby="hasError ? `${id}-error` : undefined"
     v-bind="$attrs"
     :class="['input-field', { 'input-error': hasError }]"
-    @input="$emit('update:modelValue', $event.target.value)"
+    @input="handleInputDebounced"
     @blur="$emit('blur')"
   />
 </template>
 
 <script setup lang="ts">
-import type { AppFormInputProps } from "~/types/components";
-const props = defineProps<AppFormInputProps>();
-// {
-//   id: { type: String, required: true },
-//   modelValue: { type: [String, Number], default: "" },
-//   type: { type: String, default: "text" },
-//   hasError: { type: Boolean, default: false },
-// }
-defineEmits(["update:modelValue", "blur"]);
+import { useDebounceFn } from "@vueuse/core";
+import type { FormInputProps } from "~/types/components";
+const props = defineProps<FormInputProps>();
+const emits = defineEmits(["update:modelValue", "blur"]);
+
+const handleInputDebounced = useDebounceFn(($event) => {
+  emits("update:modelValue", $event.target.value);
+}, 500);
 </script>

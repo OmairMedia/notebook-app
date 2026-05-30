@@ -9,10 +9,10 @@
 </template>
 
 <script setup lang="ts">
-import type { AppFormFieldProps } from "@/types/components";
+import type { FormFieldProps } from "@/types/components";
 import { computed } from "vue";
 
-const props = defineProps<AppFormFieldProps>();
+const props = defineProps<FormFieldProps>();
 
 const hasError = computed(() => props.errors && props.errors.length > 0);
 </script>

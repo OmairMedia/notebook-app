@@ -122,7 +122,7 @@
   --radius-tight: 4px;
   --radius-input: 6px;
   --radius-card: 7px;
-  --radius-button: 8px;
+  --radius-button: 2px;
 }
 
 /* ------------------------------------------------------------------ */
@@ -170,22 +170,25 @@
   }
 
   /* ---------- Buttons ---------- */
+  .button {
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-label);
+    line-height: var(--line-height-label);
+    padding: var(--spacing-12) var(--spacing-20);
+    border-radius: var(--radius-button);
+
+    transition: background-color 0.15s ease;
+    border: none;
+    cursor: pointer;
+    min-height: 44px;
+  }
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background-color: var(--color-primary);
     color: var(--color-white);
-    font-size: var(--font-size-label);
-    font-weight: var(--font-weight-label);
-    line-height: var(--line-height-label);
-    padding: var(--spacing-12) var(--spacing-20);
-    border-radius: var(--radius-button);
     box-shadow: var(--shadow-button);
-    transition: background-color 0.15s ease;
-    border: none;
-    cursor: pointer;
-    min-height: 44px;
   }
   .btn-primary:hover {
     background-color: var(--color-primary-dark);
@@ -197,18 +200,10 @@
     justify-content: center;
     background-color: var(--color-white);
     color: var(--color-primary);
-    font-size: var(--font-size-label);
-    font-weight: var(--font-weight-body); /* 400 */
-    line-height: var(--line-height-label);
-    padding: var(--spacing-8) var(--spacing-16);
-    border-radius: var(--radius-button);
     border: 1px solid var(--color-medium-gray);
     box-shadow:
       0 1px 1px 0 rgba(16, 17, 26, 0.16),
       0 0 0 1px var(--color-medium-gray);
-    transition: all 0.15s ease;
-    cursor: pointer;
-    min-height: 44px;
   }
   .btn-secondary:hover {
     background-color: var(--color-light-gray);
@@ -221,14 +216,6 @@
     justify-content: center;
     background: transparent;
     color: var(--color-primary);
-    font-size: var(--font-size-label);
-    font-weight: 500;
-    line-height: var(--line-height-label);
-    padding: 0;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    min-height: 44px;
   }
   .btn-ghost:hover {
     color: var(--color-primary-dark);
@@ -255,7 +242,7 @@
   .input-field::placeholder {
     color: var(--color-gray-500);
   }
-  .input-field:focus {
+  .input-field:focus-within {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(84, 105, 212, 0.1);
     outline: none;

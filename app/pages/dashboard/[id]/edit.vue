@@ -10,28 +10,7 @@
       </template>
     </shared-header>
 
-    <div class="max-w-3xl mx-auto px-8 mt-10">
-      <div class="mb-5">
-        <label class="form-label" for="title">Title</label>
-        <input
-          id="title"
-          v-model="title"
-          type="text"
-          class="input-field"
-          required
-        />
-      </div>
-      <div class="mb-5">
-        <label class="form-label" for="body">Body</label>
-        <textarea
-          id="body"
-          v-model="body"
-          class="input-field"
-          rows="12"
-          style="resize: vertical"
-        ></textarea>
-      </div>
-    </div>
+    <NotesForm :note="note" />
   </div>
 </template>
 
@@ -43,21 +22,15 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 
-const id = route.params.id;
-const note = "";
-
-// Redirect if note not found (optional)
-if (!note) {
-  router.replace("/notes");
-}
-
-const title = ref(note?.title || "");
-const body = ref(note?.body || "");
-
-const save = () => {
-  if (!title.value.trim() || !body.value.trim())
-    return alert("Title and body are required.");
-  // updateNote(id, title.value.trim(), body.value.trim());
-  router.push(`/notes/${id}`);
-};
+const note = ref({
+  id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  title: "Meeting notes – Q3 planning",
+  body: `Discussed roadmap for Q3:
+- Finalize API v2 migration by July 15
+- UX refresh for dashboard (designs due next week)
+- Hiring update: two new frontend engineers start Aug 1
+Next meeting: Friday 10am PST`,
+  createdAt: "2026-05-20T09:30:00.000Z",
+  updatedAt: "2026-05-25T14:15:00.000Z",
+});
 </script>

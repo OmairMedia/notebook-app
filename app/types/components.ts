@@ -1,13 +1,14 @@
 // Button
-export interface AppButtonProps {
-  variant: "primary" | "secondary" | "ghost";
-  type: "button" | "submit" | "reset";
-  loading: boolean;
-  disabled: boolean;
+export interface ButtonProps {
+  variant?: "primary" | "secondary" | "ghost";
+  type?: "button" | "submit" | "reset";
+  loading?: boolean;
+  disabled?: boolean;
+  text?: string;
 }
 
 // FormInput
-export interface AppFormInputProps {
+export interface FormInputProps {
   id: string;
   modelValue: string | number;
   type: "text" | "email" | "password" | "number" | "tel" | "url";
@@ -17,18 +18,18 @@ export interface AppFormInputProps {
 }
 
 // FormLabel
-export interface AppFormLabelProps {
+export interface FormLabelProps {
   forId: string;
 }
 
 // FormError
-export interface AppFormErrorProps {
+export interface FormErrorProps {
   inputId: string;
   errors: string[];
 }
 
 // FormField (wrapper)
-export interface AppFormFieldProps {
+export interface FormFieldProps {
   inputId: string;
   label: string;
   errors: string[];
@@ -42,7 +43,7 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface AppSelectProps {
+export interface SelectProps {
   id: string;
   modelValue: string | number | null;
   options: SelectOption[];
@@ -51,7 +52,7 @@ export interface AppSelectProps {
 }
 
 // AppCombobox
-export interface AppComboboxProps {
+export interface ComboboxProps {
   id: string;
   modelValue: string | number | null;
   options: SelectOption[];

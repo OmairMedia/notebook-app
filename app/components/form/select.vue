@@ -25,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import type { AppSelectProps } from "@/types/components";
+import type { SelectProps } from "@/types/components";
 
-defineProps<AppSelectProps>();
+defineProps<SelectProps>();
 
 defineEmits(["update:modelValue", "blur"]);
 </script>

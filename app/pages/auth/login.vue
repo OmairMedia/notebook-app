@@ -54,7 +54,7 @@
         :on-blur="blurHandler('password')"
       >
         <template #default="{ inputId, hasError, onBlur }">
-          <FormInput
+          <FormPassword
             :id="inputId"
             v-model="formData.password"
             :has-error="hasError"
@@ -71,15 +71,15 @@
         {{ formError }}
       </div>
 
-      <button
+      <SharedButton
         type="submit"
-        class="btn-primary w-full mt-2"
+        class="w-full mt-2"
         :disabled="isSubmitting"
+        :loading="isSubmitting"
         :aria-busy="isSubmitting"
+        :text="isSignIn ? 'Sign in' : 'Sign up'"
       >
-        <span v-if="isSubmitting" class="spinner mr-2" aria-hidden="true" />
-        {{ isSignIn ? "Sign in" : "Sign up" }}
-      </button>
+      </SharedButton>
     </form>
 
     <p class="text-label font-link-secondary text-gray-500 text-center mt-4">
@@ -97,6 +97,7 @@
 
 <script setup>
 definePageMeta({
+  name: "Login",
   layout: "auth",
   middleware: false, // allow unauthenticated access
 });

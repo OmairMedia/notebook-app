@@ -3,55 +3,44 @@
     :type="type"
     :disabled="disabled || loading"
     :aria-busy="loading"
+    class="button"
     :class="buttonClass"
     v-bind="$attrs"
   >
     <!-- Loading spinner -->
     <span v-if="loading" class="spinner" aria-hidden="true" />
     <!-- Leading icon slot -->
-    <span v-if="$slots.icon && !loading" class="inline-flex mr-2">
-      <slot name="icon" />
+    <span v-if="!loading" class="inline-flex mr-2">
+      <slot name="leading-icon" />
     </span>
-    <slot />
+    <span>{{ text }}</span>
+    <!-- Trailing icon slot -->
+    <span v-if="!loading" class="inline-flex ml-2">
+      <slot name="trailing-icon" />
+    </span>
   </button>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import type { AppButtonProps } from "@/types/components";
+import type { ButtonProps } from "@/types/components";
 
 defineOptions({
   inheritAttrs: false,
 });
 
-const props = defineProps<AppButtonProps>();
-
-//   {
-//   variant: {
-//     type: String,
-//     default: "primary",
-//     validator: (v) => ["primary", "secondary", "ghost"].includes(v),
-//   },
-//   type: {
-//     type: String,
-//     default: "button",
-//   },
-//   loading: {
-//     type: Boolean,
-//     default: false,
-//   },
-//   disabled: {
-//     type: Boolean,
-//     default: false,
-//   },
-// }
+const props = withDefaults(defineProps<ButtonProps>(), {
+  loading: false,
+  type: "button",
+  variant: "primary",
+  disabled: false,
+  text: "",
+});
 
 const buttonClass = computed(() => {
-  const base = "btn";
   if (props.variant === "primary") return "btn-primary";
   if (props.variant === "secondary") return "btn-secondary";
-  return "btn-ghost";
+  if (props.variant === "ghost") return "btn-ghost";
+  return "btn-primary";
 });
 </script>
-
-<style scoped></style>

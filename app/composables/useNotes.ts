@@ -34,11 +34,20 @@ export function useNotes() {
     toast.success("Note created!");
   };
 
+  const deleteNote = async (id) => {
+    const { error } = await supabase.from("Notes").delete().eq("id", id);
+    if (error) {
+      toast.error(error.message);
+    }
+    toast.success("Note deleted!");
+  };
+
   return {
     notes,
     formData,
     getNotes,
     createNote,
     updateNote,
+    deleteNote
   };
 }

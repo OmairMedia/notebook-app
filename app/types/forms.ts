@@ -1,7 +1,7 @@
 import type { z } from "zod";
 
 // A map of field name → array of error messages
-export type ValidationErrors = Record<string, string[]>;
+export type ValidationErrors = Record<string, string[]> | undefined;
 
 // Individual field state for useFormField or similar composable
 export interface FieldState {

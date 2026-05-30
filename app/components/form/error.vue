@@ -26,7 +26,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { AppFormErrorProps } from "@/types/components";
+import type { FormErrorProps } from "@/types/components";
 
-defineProps<AppFormErrorProps>();
+defineProps<FormErrorProps>();
 </script>

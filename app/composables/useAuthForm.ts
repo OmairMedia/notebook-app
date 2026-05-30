@@ -65,9 +65,14 @@ export function useAuthForm() {
         });
         if (error) {
           toast.error(error.message);
+        } else {
+          // Simulate sign in – store user
+          toast.success("Login successfull");
+          router.push({
+            name: "Dashboard",
+            force: true,
+          });
         }
-        // Simulate sign in – store user
-        toast.success("Login successfull");
       } else {
         // Simulate sign up
         const { error } = await supabase.auth.signUp({
@@ -76,12 +81,14 @@ export function useAuthForm() {
         });
         if (error) {
           toast.error(error.message);
+        } else {
+          // Simulate sign in – store user
+          toast.success("User registered successfully");
+          router.push({
+            name: "Dashboard",
+          });
         }
-        // Simulate sign in – store user
-        toast.success("User registered successfully");
       }
-
-      router.push("/dashboard");
     } catch (error) {
       // Map API errors to field-level or form-level
       if (error?.response?.data?.errors) {
