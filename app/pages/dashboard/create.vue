@@ -34,7 +34,7 @@
 
 <script setup>
 definePageMeta({
-  name: "CreateForm",
+  name: "Create Note",
   middleware: "auth",
 });
 </script>

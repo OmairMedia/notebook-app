@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   },
   supabase: {
     redirect: false,
+    types: "~/types/database.types.ts",
   },
   runtimeConfig: {
     public: {
@@ -28,5 +29,8 @@ export default defineNuxtConfig({
       supabaseKey: process.env.SUPABASE_KEY,
       appUrl: process.env.APP_URL,
     },
+  },
+  routeRules: {
+    "/": { redirect: "/dashboard" },
   },
 });

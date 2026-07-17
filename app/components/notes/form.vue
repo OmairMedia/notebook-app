@@ -61,6 +61,36 @@
   </div>
 </template>
 <script setup lang="ts">
-const { blurHandler, errors, formData, formError, isSubmitting, onSubmit } =
-  useNoteForm();
+import type { Note } from "~/types/notes";
+
+const {
+  blurHandler,
+  errors,
+  formData,
+  formError,
+  isSubmitting,
+  onSubmit,
+  setFormMode,
+  setFormData,
+} = useNoteForm();
+
+const props = withDefaults(
+  defineProps<{
+    mode?: string;
+    note?: Note;
+  }>(),
+  {
+    mode: "add",
+  },
+);
+
+onMounted(() => {
+  setFormMode(props.mode);
+  if (props.mode === "edit") {
+    setFormData({
+      title: props.note?.title,
+      body: props.note?.body,
+    });
+  }
+});
 </script>

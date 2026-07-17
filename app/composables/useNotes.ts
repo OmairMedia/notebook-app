@@ -4,10 +4,10 @@ import { toast } from "vue-sonner";
 
 export function useNotes() {
   const supabase = useSupabaseClient();
+  const note = ref<Note | null>(null);
   const notes = ref<Note[]>([]);
   const notes1 = ref([
     {
-      id: "1",
       title: "Meeting notes – Q3 planning",
       body: `Discussed roadmap for Q3:
   - Finalize API v2 migration by July 15
@@ -19,7 +19,6 @@ export function useNotes() {
       user_id: "a53fa49c-a2fa-48c0-a5bd-33f7bf882a4d",
     },
     {
-      id: "2",
       title: "Book recommendations",
       body: `Finished "The Pragmatic Programmer" – great section on orthogonal systems.\nNext on list:\n- "Clean Architecture" by Robert C. Martin\n- "Designing Data-Intensive Applications" by Martin Kleppmann\n- "Atomic Habits" (non-tech but highly recommended)`,
       createdAt: "2026-05-18T17:20:00.000Z",
@@ -27,7 +26,6 @@ export function useNotes() {
       user_id: "a53fa49c-a2fa-48c0-a5bd-33f7bf882a4d",
     },
     {
-      id: "3",
       title: "Random ideas for side project",
       body: `A daily micro-journaling app with AI-generated prompts.
       Could integrate with Notion API.
@@ -37,7 +35,6 @@ export function useNotes() {
       user_id: "a53fa49c-a2fa-48c0-a5bd-33f7bf882a4d",
     },
     {
-      id: "4",
       title: "Workout routine",
       body: `Monday: Chest & Triceps
       - Bench press 4x8
@@ -58,7 +55,6 @@ export function useNotes() {
       user_id: "a53fa49c-a2fa-48c0-a5bd-33f7bf882a4d",
     },
     {
-      id: "5",
       title: "Shopping list",
       body: `- Almond milk
       - Eggs (1 dozen)
@@ -73,7 +69,6 @@ export function useNotes() {
       user_id: "a53fa49c-a2fa-48c0-a5bd-33f7bf882a4d",
     },
     {
-      id: "6",
       title: "Code snippet: debounce function",
       body: `/**
        * Debounce function to limit how often a function is called.
@@ -109,6 +104,12 @@ export function useNotes() {
     console.log("notes -> ", notes.value);
   };
 
+  const getSingleNote = async (id) => {
+    const { data } = await supabase.from("Note").select("*").eq("id", id);
+    note.value = data;
+    console.log("note -> ", note.value);
+  };
+
   const createNote = async () => {
     const { error } = await supabase.from("Notes").insert(formData.value);
     if (error) {
@@ -133,6 +134,7 @@ export function useNotes() {
     if (error) {
       toast.error(error.message);
     }
+
     toast.success("Note deleted!");
   };
 
@@ -145,9 +147,11 @@ export function useNotes() {
   };
 
   return {
+    note,
     notes,
     formData,
     getNotes,
+    getSingleNote,
     createNote,
     updateNote,
     deleteNote,

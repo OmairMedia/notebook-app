@@ -10,7 +10,7 @@ export const useNoteForm = () => {
   const router = useRouter();
   const isSubmitting = ref(false);
   const formError = ref(""); // general form-level error
-
+  const formMode = ref("add");
   const formData = reactive<CreateNoteInput>({
     title: "",
     body: "",
@@ -80,6 +80,15 @@ export const useNoteForm = () => {
     return () => validateField(fieldName, formData[fieldName]);
   };
 
+  const setFormMode = (mode) => {
+    formMode.value = mode;
+  };
+
+  const setFormData = (data) => {
+    formData.title = data?.title;
+    formData.body = data?.body;
+  };
+
   return {
     formData,
     errors,
@@ -87,5 +96,8 @@ export const useNoteForm = () => {
     isSubmitting,
     onSubmit,
     blurHandler,
+    setFormMode,
+    formMode,
+    setFormData,
   };
 };

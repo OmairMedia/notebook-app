@@ -16,19 +16,21 @@
         class="p-0"
         variant="ghost"
         text="Read"
-        @click="navigateTo(`/notes/${note.id}`)"
+        @click="readNote(note.id)"
       >
       </SharedButton>
       <SharedButton
         class="p-0 text-red-500"
         variant="ghost"
         text="Delete"
+        @click="removeNote(note.id)"
       ></SharedButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { deleteNote, getNotes } = useNotes();
 import type { Note } from "@/types/notes";
 const props = defineProps<{
   note: Note;
@@ -44,5 +46,19 @@ const timeAgo = (dateStr) => {
   if (hours < 24) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
+};
+
+const readNote = async (id) => {
+  await navigateTo({
+    name: "Single Note",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const removeNote = async (id) => {
+  await deleteNote(id);
+  await getNotes();
 };
 </script>

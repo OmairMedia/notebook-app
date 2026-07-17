@@ -12,7 +12,13 @@
 import type { FormFieldProps } from "@/types/components";
 import { computed } from "vue";
 
-const props = defineProps<FormFieldProps>();
+// export interface FormFieldProps {
+//   inputId: string;
+//   label: string;
+//   errors: string[];
+//   onBlur: () => void;
+// }
 
+const props = defineProps<FormFieldProps>();
 const hasError = computed(() => props.errors && props.errors.length > 0);
 </script>
